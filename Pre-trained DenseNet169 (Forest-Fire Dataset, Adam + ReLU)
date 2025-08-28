@@ -1,0 +1,12 @@
+from tensorflow.keras.applications import DenseNet169
+
+base_model = DenseNet169(weights="imagenet", include_top=False, input_shape=(224,224,3), pooling="avg")
+x = base_model.output
+x = ReLU()(x)
+output = Dense(train_gen.num_classes, activation='softmax')(x)
+model = Model(inputs=base_model.input, outputs=output)
+
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+model.fit(train_gen, validation_data=val_gen, epochs=25)
+
+print("Evaluation:", model.evaluate(val_gen))

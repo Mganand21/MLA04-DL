@@ -1,0 +1,25 @@
+from tensorflow.keras.applications import MobileNet
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.layers import Dense, PReLU, GlobalAveragePooling2D
+from tensorflow.keras.models import Model
+
+# Assuming 'forest_fire_dataset' is in folder format
+datagen = ImageDataGenerator(rescale=1./255, validation_split=0.3)
+
+train_gen = datagen.flow_from_directory('forest_fire_dataset', target_size=(224,224),
+                                       subset='training', batch_size=32)
+val_gen = datagen.flow_from_directory('forest_fire_dataset', target_size=(224,224),
+                                     subset='validation', batch_size=32)
+
+base_model = MobileNet(weights="imagenet", include_top=False, input_shape=(224,224,3), pooling="avg")
+x = base_model.output
+x = PReLU()(x)
+output = Dense(train_gen.num_classes, activation='softmax')(x)
+model = Model(inputs=base_model.input, outputs=output)
+
+model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.01),
+              loss='categorical_crossentropy', metrics=['accuracy'])
+model.fit(train_gen, validation_data=val_gen, epochs=25)
+
+print("Evaluation:", model.evaluate(val_gen))
+

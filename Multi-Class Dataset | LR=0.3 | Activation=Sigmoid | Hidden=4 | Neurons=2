@@ -1,0 +1,17 @@
+# Generate multi-class dataset
+X, y = make_blobs(n_samples=600, centers=3, n_features=2, random_state=42)
+
+# NN Model
+model = Sequential([
+    Dense(2, activation='sigmoid', input_shape=(2,)),
+    Dense(2, activation='sigmoid'),
+    Dense(2, activation='sigmoid'),
+    Dense(2, activation='sigmoid'),
+    Dense(3, activation='softmax')
+])
+
+optimizer = SGD(learning_rate=0.3)
+model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+history = model.fit(X, y, epochs=300, verbose=0)
+
+print("Final Accuracy:", model.evaluate(X, y, verbose=0)[1])

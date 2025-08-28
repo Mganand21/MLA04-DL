@@ -1,0 +1,27 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+X = np.array([1, 2, 3, 4, 5])
+y = np.array([2.2, 3.8, 6.1, 7.9, 10.2])  # modified slightly
+
+m = b = 0
+L = 0.01
+epochs = 1000
+
+n = len(X)
+for _ in range(epochs):
+    y_pred = m * X + b
+    dm = -(2/n) * sum(X * (y - y_pred))
+    db = -(2/n) * sum(y - y_pred)
+    m -= L * dm
+    b -= L * db
+
+print("Slope (m):", m)
+print("Intercept (b):", b)
+
+plt.scatter(X, y, color="green")
+plt.plot(X, m*X + b, color="orange")
+plt.title("Gradient Descent (Modified Data)")
+plt.xlabel("X")
+plt.ylabel("y")
+plt.show()

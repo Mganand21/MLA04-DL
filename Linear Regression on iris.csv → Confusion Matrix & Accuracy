@@ -1,0 +1,41 @@
+# task1_linear_regression_iris.py
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import confusion_matrix, accuracy_score
+
+# --- Load ---
+df = pd.read_csv("iris.csv")
+
+# --- Target column (adjust if needed) ---
+target_col = "Species"
+
+# Encode target to integers
+le = LabelEncoder()
+y = le.fit_transform(df[target_col])
+
+# Features: drop target and any non-numeric cols
+X = df.drop(columns=[target_col])
+X = X.select_dtypes(include=[np.number])
+
+# --- Split ---
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42, stratify=y
+)
+
+# --- Train Linear Regression (regression used for classification by rounding) ---
+reg = LinearRegression()
+reg.fit(X_train, y_train)
+
+# --- Predict & cast to labels ---
+y_pred_cont = reg.predict(X_test)
+y_pred = np.clip(np.round(y_pred_cont), y.min(), y.max()).astype(int)
+
+# --- Metrics ---
+cm = confusion_matrix(y_test, y_pred)
+acc = accuracy_score(y_test, y_pred)
+
+print("Confusion Matrix:\n", cm)
+print("Detection Accuracy: {:.2f}%".format(acc * 100))

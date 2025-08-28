@@ -1,0 +1,17 @@
+# Generate circular dataset
+X, y = make_circles(n_samples=500, factor=0.5, noise=0.05)
+
+# Build NN
+model = Sequential([
+    Dense(4, activation='linear', input_shape=(2,)),
+    Dense(4, activation='linear'),
+    Dense(4, activation='linear'),
+    Dense(1, activation='sigmoid')
+])
+
+# Compile & Train
+optimizer = SGD(learning_rate=0.1)
+model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
+history = model.fit(X, y, epochs=150, verbose=0)
+
+print("Final Accuracy:", model.evaluate(X, y, verbose=0)[1])

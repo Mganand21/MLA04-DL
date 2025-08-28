@@ -1,0 +1,15 @@
+# Using make_circles to simulate spiral dataset
+X, y = make_circles(n_samples=600, factor=0.3, noise=0.07)
+
+# NN Model
+model = Sequential([
+    Dense(4, activation='sigmoid', input_shape=(2,)),
+    Dense(4, activation='sigmoid'),
+    Dense(1, activation='sigmoid')
+])
+
+optimizer = SGD(learning_rate=0.01)
+model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
+history = model.fit(X, y, epochs=200, verbose=0)
+
+print("Final Accuracy:", model.evaluate(X, y, verbose=0)[1])
